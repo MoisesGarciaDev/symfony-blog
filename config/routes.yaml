@@ -1,0 +1,9 @@
+homepage:
+    path: /
+    controller: App\Controller\PostController::index
+
+controllers:
+    resource:
+        path: ../src/Controller/
+        namespace: App\Controller
+    type: attribute

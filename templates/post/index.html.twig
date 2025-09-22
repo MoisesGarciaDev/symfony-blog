@@ -1,0 +1,73 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<div class="container mt-4">
+    {# Barra de búsqueda #}
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <form method="get">
+                <div class="input-group">
+                    <input type="text" name="search" class="form-control" placeholder="Pesquisar por título..." value="{{ search_term }}">
+                    <button class="btn btn-primary" type="submit">
+                        <i class="bi bi-search"></i> Pesquisar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <h1 class="mb-4">Artigos</h1>
+
+    {# Botón crear artículo - solo para usuarios logados #}
+    {% if app.user %}
+        <a href="{{ path('app_post_new') }}" class="btn btn-primary mb-4">
+            <i class="bi bi-plus-circle"></i> Criar novo artigo
+        </a>
+    {% else %}
+        <div class="alert alert-info mb-4">
+            <a href="{{ path('app_register') }}" class="alert-link">Registre-se</a> ou 
+            <a href="{{ path('app_login') }}" class="alert-link">faça login</a> para criar artigos.
+        </div>
+    {% endif %}
+
+    <div class="row">
+        {% for post in posts %}
+            {# Tarjeta de artículo #}
+            <div class="col-md-6 col-lg-6 mb-4">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ post.title }}</h5>
+                        <h6 class="card-subtitle mb-2 text-muted small">
+                            Por {{ post.author.email }} · {{ post.createdAt|date('d/m/Y') }}
+                        </h6>
+                        <p class="card-text">{{ post.content|slice(0, 200) }}...</p>
+                    </div>
+                    <div class="card-footer bg-white">
+                        <a href="{{ path('app_post_show', {'id': post.id}) }}" class="btn btn-sm btn-outline-primary">
+                            <i class="bi bi-eye"></i> Ver
+                        </a>
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            <div class="col-12">
+                <div class="alert alert-warning">
+                    {% if app.user %}
+                        Nenhum artigo encontrado. Seja o primeiro a criar um!
+                    {% else %}
+                        Nenhum artigo publicado ainda. 
+                        <a href="{{ path('app_register') }}" class="alert-link">Registre-se</a> para ser o primeiro!
+                    {% endif %}
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+    
+    {% if posts|length > 0 %}
+        <div class="navigation mt-4">
+            {{ knp_pagination_render(posts, null, { 'prev_label': 'Anterior', 'next_label': 'Próximo' }) }}
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

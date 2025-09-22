@@ -1,0 +1,35 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Minha Conta{% endblock %}
+
+{% block body %}
+<div class="container mt-4">
+    <h1>Minha Conta</h1>
+    <p>Email: {{ user.email }}</p>
+    
+    <h2>Meus Artigos ({{ posts|length }})</h2>
+    
+    <div class="row">
+        {% for post in posts %}
+            <div class="col-md-6 mb-3">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ post.title }}</h5>
+                        <p class="card-text">{{ post.content|slice(0, 100) }}...</p>
+                        <a href="{{ path('app_post_edit', {'id': post.id}) }}" class="btn btn-sm btn-secondary">Editar</a>
+                        <form method="POST" action="{{ path('app_post_delete', {'id': post.id}) }}" onsubmit="return confirm('¿Estás seguro de que quieres eliminar este artículo?');" style="display: inline;">
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ post.id) }}">
+                            <button type="submit" class="btn btn-sm btn-outline-danger">Eliminar</button>
+                        </form>
+                    </div>
+                    
+                </div>
+            </div>
+        {% else %}
+            <div class="col-12">
+                <p>Nenhum artigo criado ainda.</p>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
